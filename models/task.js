@@ -7,7 +7,7 @@ const taskSchema = new mongoose.Schema({
         required: true
     },
     size: {
-        type: String,
+        type: Number,
         trim: true,
         required: true
     },
@@ -29,15 +29,10 @@ const taskSchema = new mongoose.Schema({
      phoneNumber: {
         type: Number,
         required: true
-     },
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    }
+     }
 }, {
     timestamps: true
 })
 
-const Tasks = mongoose.model('Tasks', taskSchema)
+const Tasks = mongoose.model('Pizza orders', taskSchema)
 module.exports = Tasks
