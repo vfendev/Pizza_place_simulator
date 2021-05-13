@@ -1,10 +1,15 @@
 const express = require('express');
 const Tasks = require('../models/task');
+const Ingredients = require('../models/ingredients');
 const router = new express.Router();
+
 
 // Place an order
 router.post('/order', async (req, res) => { 
     const order = new Tasks(req.body)
+    const ingredients = await Ingredients.find()
+    console.log(ingredients);
+    
     try {
         await order.save()
         res.status(202).send(order)
