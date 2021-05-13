@@ -27,12 +27,12 @@ const taskSchema = new mongoose.Schema({
         required: true
      },
      phoneNumber: {
-        type: Number,
+        type: String,
         required: true
      }
 }, {
     timestamps: true
 })
 
-const Tasks = mongoose.model('Pizza orders', taskSchema)
+const Tasks = mongoose.model('Orders', taskSchema)
 module.exports = Tasks

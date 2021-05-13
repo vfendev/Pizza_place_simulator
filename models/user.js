@@ -59,20 +59,12 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 }) 
 
-// userSchema.virtual('lists', {
-//     ref: 'Lists',
-//     localField: '_id',
-//     foreignField: 'owner'
-// })
-
-
 
 userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
     delete userObject.password
     delete userObject.tokens
-    delete userObject.avatar
     return userObject
 }
 
@@ -101,7 +93,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 // Hash the plain text password before saving
-
 userSchema.pre('save', async function (next) {
     const user =  this;
     if (user.isModified('password')) {
