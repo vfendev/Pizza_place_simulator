@@ -1,0 +1,17 @@
+{
+  "name": "pizza-restaurant",
+  "version": "1.0.0",
+  "description": "Food ordering system",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "author": "Velimir Patrnogic",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.8"
+  }
+}
