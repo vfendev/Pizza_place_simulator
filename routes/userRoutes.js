@@ -3,12 +3,8 @@ const multer = require('multer');
 const User = require('../models/user');
 const router = new express.Router();
 const auth = require('../middleware/auth');
-const { remove } = require('../models/user');
-const { response } = require('express');
-
 
 // Admin login system
-
 
 // Admin register 
 router.post('/register', async (req, res) => {
@@ -33,7 +29,7 @@ router.post('/register', async (req, res) => {
      }
  })
 
-// Aadmin logout session
+// Admin logout session
 router.post('/user/logout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
@@ -46,4 +42,4 @@ router.post('/user/logout', auth, async (req, res) => {
     }
 })
 
- module.exports = router
+module.exports = router
