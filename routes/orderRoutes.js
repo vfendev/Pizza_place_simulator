@@ -34,6 +34,17 @@ router.get('/orders/:id', async (req, res) => {
     }
 })
 
+// Cancel order
+router.delete('/cancel_order/:id', async (req, res) => {
+    
+    try {
+        const deleteOrder = await Tasks.findOneAndDelete({_id: req.params.id})
+        res.send(deleteOrder)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 
 
 module.exports = router
