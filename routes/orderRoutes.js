@@ -28,7 +28,7 @@ router.get('/orders/:id', async (req, res) => {
     const _id = req.params.id
     try {
         const order = await Tasks.findById(_id)
-        res.status(202).send(order)
+        res.send(order)
     } catch (e) {
         res.status(500).send()
     }

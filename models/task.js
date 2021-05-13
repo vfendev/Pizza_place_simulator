@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-    ingredients: {
+    ingredient: {
         type: String,
         trim: true,
         required: true

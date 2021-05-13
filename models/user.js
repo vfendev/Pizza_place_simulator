@@ -108,5 +108,5 @@ userSchema.pre('remove', async function (next) {
     next()
 })
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('admins', userSchema)
 module.exports = User
