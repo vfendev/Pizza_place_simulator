@@ -1,20 +1,14 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-    ingredient: {
-        type: mongoose.Schema.Types.ObjectId,
+    ingredients: {
+        type: Array,
         trim: true,
-        required: true,
-        ref: 'ingredients'
+        required: true
     },
     size: {
-        type: String,
-        trim: true,
-        required: true,
-        default: "Small"
-    },
-    time: {
         type: Number,
+        trim: true,
         required: true,
         default: 1
     },

@@ -2,44 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Orders = require('../models/orders');
 const Ingredients = require('../models/ingredients');
-const Statistics = require('../models/statistics');
 const router = new express.Router();
 
 // Place an order
 router.post('/order', async (req, res) => { 
-    const order =  new Orders({ 
-        ...req.body,
-        ingredient: req.body.ingredient
-        })
+    const ingredientsList = await Ingredients.find();
+    var ingredientsMap = ingredientsList.reduce(function(acc, cur) {
+        acc[cur.name] = cur;
+        return acc;
+      }, {});
+  
     const existingOrderNumber = await Orders.countDocuments({status: 'In_progres'})
     try {
         if (existingOrderNumber < 15) {
-             if (await Ingredients.findById(req.body.ingredient)) {
-                 const ingredients = await Ingredients.find({...req.body}) || []
-                 let time = req.body.time * 1000
-                 let price = req.body.size * 8
-                 console.log(ingredients)
-                 ingredients.forEach(ingredient => {
-                     time += ingredient * 100;
-                     price += ingredient * 10;
+                 let time = req.body.size * 1000
+                 let price = req.body.size * 200
+                 req.body.ingredients.forEach(ingredient => {
+                    ingredientsMap[ingredient].update(
+                        { $inc: { qty: +1, "qty": 1 } }
+                     )   
+                     time += ingredientsMap[ingredient].time;
+                     price += ingredientsMap[ingredient].price;               
                  })
-                 order.price = price;
-                 order.time = time;
-
-                const savedOrder = await order.save()
-                res.status(202).send({
+                 const order =  new Orders({ 
+                    ...req.body,
+                    price,
+                    time
+                    })
+                 const savedOrder = await order.save()
+                 res.status(202).send({
                     time,
                     price,
                     id: savedOrder.id,
                     orderNumber: existingOrderNumber + 1
                 })
-             }
         } else {
-            res.status(500).send()
-            console.log('Queue is full, order later!')
+            res.status(500).send('Queue is full, order later!')
         }
     } catch (e) {
         res.status(500).send(e)
+        console.log(e)
     }          
    
 })
@@ -47,8 +49,11 @@ router.post('/order', async (req, res) => {
 // List all orders
 router.get('/orders', async (req, res) => {
     try {
-        const orders = await Orders.find()
-        res.send(orders)
+        const orders = await Orders.find({},{
+            ingredients: 1 ,
+            size: 1
+        }).sort({_id: -1}).limit(5)
+        res.status(200).send(orders)
     } catch (e) {
         res.status(500).send()
     }
@@ -58,7 +63,9 @@ router.get('/orders', async (req, res) => {
 router.get('/orders/:id', async (req, res) => {
     const _id = req.params.id
     try {
-        const order = await Orders.findById(_id)
+        const order = await Orders.findById({_id},{
+            status: 1
+        })
         res.send(order)
     } catch (e) {
         res.status(500).send()
