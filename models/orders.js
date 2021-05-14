@@ -13,6 +13,11 @@ const taskSchema = new mongoose.Schema({
         required: true,
         default: "Small"
     },
+    time: {
+        type: Number,
+        required: true,
+        default: 1
+    },
     firstName: {
         type: String,
         trim: true,

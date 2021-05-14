@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const statisticsSchema = new mongoose.Schema({
-    topFiveIngridients: {
+    topFiveIngredients: {
         type: String,
-        ref: 'Ingredients'
+        ref: 'ingredients'
     }, 
     totalMoneyEarned: {
         type: Number,
-        ref: 'Ingredients'
+        ref: 'ingredients'
     }
 })
 

@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Orders = require('../models/orders');
 const Ingredients = require('../models/ingredients');
-const { db } = require('../models/orders');
+const Statistics = require('../models/statistics');
 const router = new express.Router();
 
 // Place an order
@@ -20,9 +20,9 @@ router.post('/order', async (req, res) => {
                  let price = req.body.price
                  const ingredients = req.body.ingredients || [];
                  ingredients.forEach(ingredient => {
-                     time += ingredient * 100;
+                     time += ingredient* 100;
                      price += ingredient * 10;
-                    Orders.updateMany({ name: ingredient}, {$inc: { qty: - 1 }})
+                    Statistics.updateMany({ name: ingredient}, {$inc: { qty: - 1 }})
                  })
                  order.price = price;
                  order.time = time;
