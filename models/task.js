@@ -2,14 +2,16 @@ const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
     ingredient: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         trim: true,
-        required: true
+        required: true,
+        ref: 'ingredients'
     },
     size: {
-        type: Number,
+        type: String,
         trim: true,
-        required: true
+        required: true,
+        default: "Small"
     },
     firstName: {
         type: String,
@@ -29,6 +31,10 @@ const taskSchema = new mongoose.Schema({
      phoneNumber: {
         type: String,
         required: true
+     },
+     status: {
+         type: String,
+         default: 'In_progres'
      }
 }, {
     timestamps: true

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const statisticsSchema = new mongoose.Schema({
     topFiveIngridients: {
-        type: Array,
+        type: String,
         ref: 'Ingredients'
     }, 
     totalMoneyEarned: {
