@@ -16,7 +16,9 @@ const ingredientsSchema = new mongoose.Schema({
         required: true
     },
     qty: {
-        type: Number
+        type: Number,
+        required: true,
+        default: 0
     }
 
 })

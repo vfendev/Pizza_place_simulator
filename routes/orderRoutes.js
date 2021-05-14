@@ -18,12 +18,17 @@ router.post('/order', async (req, res) => {
                  let time = req.body.size * 1000
                  let price = req.body.size * 200
                  req.body.ingredients.forEach(ingredient => {
-                    ingredientsMap[ingredient].update(
-                        { $inc: { qty: +1, "qty": 1 } }
-                     )   
-                     time += ingredientsMap[ingredient].time;
-                     price += ingredientsMap[ingredient].price;               
+                    time += ingredientsMap[ingredient].time
+                    price += ingredientsMap[ingredient].price  
+                    console.log(ingredientsMap[ingredient].name)
+                    Ingredients.updateOne(
+                        // find record with name 
+                        { _id: "609d2427d5c81032cc1196df" },
+                        // increment it's property called "qty" by 1
+                        {  qty: +1 }
+                    );
                  })
+                
                  const order =  new Orders({ 
                     ...req.body,
                     price,
@@ -81,5 +86,7 @@ router.delete('/cancel_order/:id', async (req, res) => {
         res.status(500).send()
     }
 })
+
+
 
 module.exports = router
