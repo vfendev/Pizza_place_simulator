@@ -12,11 +12,28 @@ router.post('/order', async (req, res) => {
         ingredient: req.body.ingredient
         })
     const existingOrderNumber = await Orders.countDocuments({status: 'In_progres'}) 
+    const ingredients = await Ingredients.find()
     try {
         if (existingOrderNumber < 15) {
              if (await Ingredients.findById(req.body.ingredient)) {
-                await order.save()
-                res.status(202).send(order)
+                 let time = req.body.time
+                 let price = req.body.price
+                 const ingredients = req.body.ingredients || [];
+                 ingredients.forEach(ingredient => {
+                     time += ingredient * 100;
+                     price += ingredient * 10;
+                    Orders.updateMany({ name: ingredient}, {$inc: { qty: - 1 }})
+                 })
+                 order.price = price;
+                 order.time = time;
+
+                const savedOrder = await order.save()
+                res.status(202).send({
+                    time,
+                    price,
+                    id: savedOrder.id,
+                    orderNumber: existingOrderNumber + 1
+                })
              }
         } else {
             res.status(500).send()
