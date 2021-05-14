@@ -11,18 +11,17 @@ router.post('/order', async (req, res) => {
         ...req.body,
         ingredient: req.body.ingredient
         })
-    const existingOrderNumber = await Orders.countDocuments({status: 'In_progres'}) 
-    const ingredients = await Ingredients.find()
+    const existingOrderNumber = await Orders.countDocuments({status: 'In_progres'})
     try {
         if (existingOrderNumber < 15) {
              if (await Ingredients.findById(req.body.ingredient)) {
-                 let time = req.body.time
-                 let price = req.body.price
-                 const ingredients = req.body.ingredients || [];
+                 const ingredients = await Ingredients.find({...req.body}) || []
+                 let time = req.body.time * 1000
+                 let price = req.body.size * 8
+                 console.log(ingredients)
                  ingredients.forEach(ingredient => {
-                     time += ingredient* 100;
+                     time += ingredient * 100;
                      price += ingredient * 10;
-                    Statistics.updateMany({ name: ingredient}, {$inc: { qty: - 1 }})
                  })
                  order.price = price;
                  order.time = time;
