@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Orders = require('../models/orders');
 const Ingredients = require('../models/ingredients');
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
 // Place an order
@@ -20,21 +21,19 @@ router.post('/order', async (req, res) => {
                  req.body.ingredients.forEach(ingredient => {
                     time += ingredientsMap[ingredient].time
                     price += ingredientsMap[ingredient].price  
-                    console.log(ingredientsMap[ingredient].name)
-                    Ingredients.updateOne(
-                        // find record with name 
-                        { _id: "609d2427d5c81032cc1196df" },
-                        // increment it's property called "qty" by 1
-                        {  qty: +1 }
-                    );
                  })
-                
                  const order =  new Orders({ 
                     ...req.body,
                     price,
                     time
                     })
                  const savedOrder = await order.save()
+                 const p = await Ingredients.updateMany(
+                    // find record with name 
+                    { name: {$in: req.body.ingredients }},
+                    // increment it's property called "qty" by 1
+                    {  $inc: {qty: 1} }
+                );
                  res.status(202).send({
                     time,
                     price,
@@ -51,8 +50,18 @@ router.post('/order', async (req, res) => {
    
 })
 
-// List all orders
-router.get('/orders', async (req, res) => {
+// List of all orders  
+router.get('/orders', auth, async (req, res) => {
+    try {
+        const orders = await Orders.find()
+        res.status(200).send(orders)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+// Recent orders
+router.get('/recent_orders', async (req, res) => {
     try {
         const orders = await Orders.find({},{
             ingredients: 1 ,
@@ -87,6 +96,14 @@ router.delete('/cancel_order/:id', async (req, res) => {
     }
 })
 
+router.post('/finished_order/:id', async (req, res) => {
+    try {
+        const finishOrder = await Orders.updateOne({_id: req.params.id}, {status: 'Finished'})
+        res.send('OK')
+    } catch (e) {
+        res.status(500).send()
+    }
+})
 
 
 module.exports = router

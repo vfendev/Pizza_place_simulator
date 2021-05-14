@@ -34,6 +34,12 @@ const taskSchema = new mongoose.Schema({
      status: {
          type: String,
          default: 'In_progres'
+     },
+     price: {
+         type: Number
+     },
+     time: {
+         type: Number
      }
 }, {
     timestamps: true

@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Orders = require('../models/orders');
 const Ingredients = require('../models/ingredients');
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
 
 // router.get statistics 
-router.get('/statistics/ingredients', async (req, res) => {
+router.get('/statistics/ingredients', auth, async (req, res) => {
     
     try {
         const ingredients = await Ingredients.find({},{
@@ -19,14 +20,19 @@ router.get('/statistics/ingredients', async (req, res) => {
     }
 })
 
-// router.get statistics 
-router.get('/statistics/total', async (req, res) => {
+// router.get statistics       
+router.get('/statistics/total', auth, async (req, res) => {
     try {
         // ingredients.find sum function mongodb
-        const orders = Orders.aggregate([
-            $set
-        ])
-        res.status(200).send(orders)
+        const total = await Orders.aggregate([{
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$price"
+                }
+            }
+        }])
+        res.status(200).send(total)
     } catch (e) {
         res.status(500).send()
     }
