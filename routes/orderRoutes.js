@@ -7,18 +7,19 @@ const router = new express.Router();
 
 // Place an order
 router.post('/order', async (req, res) => { 
-    const ingredients = await Ingredients.find()
+    const ingredients = await Ingredients.findById(req.body.ingredient)
+    console.log(ingredients);
     const order = new Tasks({ 
         ...req.body,
         ingredient: req.body.ingredient
     })
-        try {
-            await order.save()
-            res.status(202).send(order)
-        } catch (e) {
-            res.status(400).send(e)
-        
-    }
+    try {
+        await order.save()
+        res.status(202).send(order)
+    } catch (e) {
+        res.status(400).send(e)
+    }  
+ 
 })
 
 // List all orders
