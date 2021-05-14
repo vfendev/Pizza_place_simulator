@@ -2,32 +2,30 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Orders = require('../models/orders');
 const Ingredients = require('../models/ingredients');
+const { db } = require('../models/orders');
 const router = new express.Router();
-
 
 // Place an order
 router.post('/order', async (req, res) => { 
-    if (await Ingredients.findById(req.body.ingredient)) {
-        const order = new Orders({ 
+    const order =  new Orders({ 
         ...req.body,
         ingredient: req.body.ingredient
         })
-        await order.save()
-        res.status(202).send(order)
-    } else {
+    const existingOrderNumber = await Orders.countDocuments({status: 'In_progres'}) 
+    try {
+        if (existingOrderNumber < 15) {
+             if (await Ingredients.findById(req.body.ingredient)) {
+                await order.save()
+                res.status(202).send(order)
+             }
+        } else {
             res.status(500).send()
-        }   
-    // try {
-    //     const order = new Orders({ 
-    //         ...req.body,
-    //         ingredient: req.body.ingredient
-    //     })
-    //     await order.save()
-    //     res.status(202).send(order)
-    // } catch (e) {
-    //     res.status(500).send(e)
-    // }  
- 
+            console.log('Queue is full, order later!')
+        }
+    } catch (e) {
+        res.status(500).send(e)
+    }          
+   
 })
 
 // List all orders
@@ -53,7 +51,6 @@ router.get('/orders/:id', async (req, res) => {
 
 // Cancel order
 router.delete('/cancel_order/:id', async (req, res) => {
-    
     try {
         const deleteOrder = await Orders.findOneAndDelete({_id: req.params.id})
         res.send(deleteOrder)
@@ -61,7 +58,5 @@ router.delete('/cancel_order/:id', async (req, res) => {
         res.status(500).send()
     }
 })
-
-
 
 module.exports = router
